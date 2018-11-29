@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.AdminsMapper">
+<resultMap id="AdminResultMap" type="com.xiangmu.entity.Admins">
+    <id column="admin_id"  property="id"  />
+    <result column="admin_name" property="admin_name"   />
+    <result column="date"  property="date"  />
+    <result column="admin_password"  property="admin_password"  />
+   
+</resultMap> 
+<select id="selectAdminByLogin" parameterType="Admins" resultType="admins">
+select * from admin where admin_password = #{admin_password} and admin_name = #{admin_name}
+</select>
+<select id="selectAdminByName" parameterType="String" resultType="admins">
+select * from admin where  admin_name = #{admin_name}
+</select>
+<select id="getRoleByName" parameterType="String" resultType="roles">
+select b.* ,c.role_desc from admin a , admin_role b ,roles c 
+where a.admin_id=b.admin_id and b.roleID=c.roleID and  a.admin_name=#{name}
+</select>
+<select id="getPowersByRole_desc" parameterType="String" resultType="powers">
+select  c.*
+from roles a,roles_powers b,powers c
+where a.roleID=b.roleID and c.powerID=b.powerID and a.role_desc=#{0}
+</select>
+<select id="getAllPowers"  resultType="powers">
+select  *
+from powers
+
+</select>
+<select id="getPowersByName" parameterType="String" resultType="powers">
+select  c.*
+from roles a,roles_powers b,powers c,admin d,admin_role e
+where a.roleID=b.roleID and c.powerID=b.powerID and d.admin_id=e.admin_id AND a.roleID=e.roleID
+and d.admin_name=#{0}
+</select>
+<select id="getPowersById" parameterType="String" resultType="powers">
+select  c.*
+from roles a,roles_powers b,powers c,admin d,admin_role e
+where a.roleID=b.roleID and c.powerID=b.powerID and d.admin_id=e.admin_id AND a.roleID=e.roleID
+and d.admin_id=#{0}
+</select>
+<!-- 查找一级目录 -->
+<select id="getFirstNavi" resultType="navi">
+select  * from powers where isNavi=1 and parentNaviID=0
+</select>
+<!-- 查找二级目录 -->
+<select id="getSecondNavi" parameterType="int"  resultType="SecondNavi">
+select  * from powers where isNavi=1 and parentNaviID=#{0}
+</select>
+<!-- 分页查询 -->
+<select id="selectAdminByPage" parameterType="map"  resultMap="AdminResultMap">
+select  * from admin limit #{startindex},#{pagesize}
+</select>
+<!-- 查询 所有admin数量-->
+<select id="selectAdminCount"  resultType="int">
+select count(*)  from admin 
+</select>
+<insert id="insertAdmin" parameterType="admins">
+insert into admin (admin_name,admin_password) values(#{admin_name},#{admin_password})
+</insert>
+<select id="selectAdminIdByName" parameterType="String"  resultType="int">
+select admin_id  from admin where admin_name=#{0}
+</select>
+<delete id="deleteAdmin" parameterType="int">
+delete from admin where admin_id=#{0}
+</delete>
+
+
+ <select id="selectAdminByConditionByPage" parameterType="map"  resultMap="AdminResultMap" >
+ select * from admin
+ <where>
+ 
+ <if test="name !='' and name !=null">
+admin_name  like "%"#{name}"%"
+ </if>
+ </where>
+limit #{startindex},#{pagesize}
+ </select>
+ <select id="selectAdminCountByCondition" parameterType="map" resultType="int">
+ select count(*) from admin
+ <where>
+ 
+ <if test="name !='' and name !=null">
+admin_name  like "%"#{name}"%"
+ </if>
+ </where>
+ </select>
+</mapper>

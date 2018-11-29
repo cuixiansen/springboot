@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.PowersMapper">
+<select id="selectAllPowers" resultType="powers">
+select * from Powers
+</select>
+<select id="selectPowersByPage" parameterType="map" resultType="powers">
+select * from Powers  where powerID not in(1,6,22) limit   #{startindex},#{pagesize}
+</select>
+<select id=""></select>
+<select id="selectPowerByRid" parameterType="int" resultType="Powers">
+select c. * from 
+roles a, powers c,roles_powers b
+where a.roleID=b.roleID and c.powerID=b.powerID and a.roleID=#{1}
+</select>
+<select id="selectPowerCount"  resultType="int">
+select count(*) from Powers  where powerID not in(1,6,22)
+</select>
+<select id="selectPowerByPowerId" parameterType="int"  resultType="powers">
+select * from Powers  where powerID =#{1}
+</select>
+<update id="updatePower" parameterType="powers" >
+update powers set power_name=#{power_name} , power_code=#{power_code},isNavi=#{isNavi},url=#{url} where powerID=#{powerID}
+</update>
+<insert id="insertPower" parameterType="powers">
+insert into powers (power_name,power_code,isNavi,parentNaviID,url) values(#{power_name},#{power_code},#{isNavi},#{parentNaviID},#{url})
+</insert>
+<delete id="deletePower" parameterType="int">
+delete from powers where powerID=#{0}
+</delete>
+<select id="selectPowerByPowerName" parameterType="String"  resultType="powers">
+select * from Powers  where power_name=#{1}
+</select>
+
+<select id="selectPowerByconditionByPage" parameterType="map"   resultType="powers" >
+ select * from powers
+ <where>
+ 
+ <if test="name !='' and name !=null">
+power_name  like "%"#{name}"%"
+ </if>
+ </where>
+limit #{startindex},#{pagesize}
+ </select>
+ <select id="selectPowerCountByCondition" parameterType="map" resultType="int">
+ select count(*) from powers
+ <where>
+ 
+ <if test="name !='' and name !=null">
+power_name  like "%"#{name}"%"
+ </if>
+ </where>
+ </select>
+
+
+</mapper>

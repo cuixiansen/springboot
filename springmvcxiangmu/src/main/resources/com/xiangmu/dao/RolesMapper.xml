@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.RolesMapper">
+<select id="selectAllRoles" resultType="roles">
+select * from roles
+</select>
+<!-- 通过adninid查找 -->
+<select id="selectRolesById" parameterType="int" resultType="roles">
+select  a.*
+from roles a,admin d,admin_role e
+where  d.admin_id=e.admin_id AND a.roleID=e.roleID
+and d.admin_id=#{0}
+
+</select>
+<select id="selectRoleByName" parameterType="String" resultType="roles">
+select * from roles where role_name=#{1}
+
+</select>
+
+<delete id="deleteAdminRole" parameterType="int" >
+delete from admin_role where admin_id =#{0}
+</delete>
+<delete id="deleteAdminRoleByRid" parameterType="int" >
+delete from admin_role where roleID =#{0}
+</delete>
+<insert id="insertAdminRole" parameterType="AdminRole">
+insert into admin_role (admin_id,roleID) values(#{admin_id},#{roleID})
+</insert>
+<select id="selectRoleByPage" parameterType="map" resultType="roles">
+select * from roles limit #{startindex},#{pagesize}
+</select>
+<select id="selectRoleCount" resultType="int">
+
+select count(*) from roles 
+</select>
+<select id="selectRoleById" parameterType="int" resultType="roles">
+select  * from roles where roleID=#{0}
+</select>
+<update id="updateRole" parameterType="roles">
+update roles set role_name=#{role_name} ,role_desc=#{role_desc},role_beizhu=#{role_beizhu} where roleID=#{roleID}
+</update>
+<delete id="deleteRolePower" parameterType="int">
+delete from roles_powers where roleID=#{1}
+</delete>
+<insert id="insertRolePower" parameterType="RolePower">
+insert into roles_powers (powerID , roleID) values(#{powerID} ,#{roleID}) 
+</insert>
+<insert id="insertRole" parameterType="roles">
+insert into Roles (role_name,role_desc,role_beizhu) values(#{role_name},#{role_desc},#{role_beizhu})
+</insert>
+<select id="selectRoleIdByName" parameterType="String" resultType="int">
+select roleID from Roles where role_name=#{1}
+</select>
+<delete id="deleteRole" parameterType="int">
+delete from roles where roleID=#{1}
+</delete>
+<select id="selectRolePowerByRid" parameterType="int" resultType="rolePower">
+select * from roles_powers where roleID=#{1}
+</select>
+<select id="selectAdminRoleByAid" parameterType="int" resultType="adminRole">
+select * from admin_role where admin_id=#{1}
+</select>
+<select id="selectAdminRoleByRid" parameterType="int" resultType="adminRole">
+select * from admin_role where roleID=#{1}
+</select>
+
+<select id="selectRoleByConditionByPage" parameterType="map"  resultType="roles" >
+ select * from roles
+ <where>
+ 
+ <if test="name !='' and name !=null">
+role_name  like "%"#{name}"%"
+ </if>
+ </where>
+limit #{startindex},#{pagesize}
+ </select>
+ <select id="selectRoleCountByCondition" parameterType="map" resultType="int">
+ select count(*) from roles
+ <where>
+ 
+ <if test="name !='' and name !=null">
+role_name  like "%"#{name}"%"
+ </if>
+ </where>
+ </select>
+</mapper>

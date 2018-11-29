@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.OrderdetailsMapper">
+<resultMap id="orderdetailResultMap" type="com.xiangmu.entity.OrderDetail">
+    <id column="id"  property="id"  />
+    <result column="orderID" property="order.orderID"   />
+    <result column="productID"  property="pu.puID"  />
+    <result column="product_name"  property="pu.pu_name"  />
+    <result column="quantity"  property="quantity"  />
+    <result column="discount"  property="discount"  />
+</resultMap> 
+<insert id="insertOrderdetail" parameterType="orderDetail">
+insert into Order_detail (orderID,productID,quantity,discount) values (#{order.orderID},#{pu.puID},#{quantity},#{discount})
+</insert>
+
+<select id="selectOrderDetailByOrderidByPage" parameterType="map" resultMap="orderdetailResultMap">
+select a.*,b.product_name from order_detail a , products b where a.productID= b.productID and a.orderID=#{id} 
+limit #{startindex},#{pagesize}
+</select>
+<select id="selectOrderDetailCountByOrderid" parameterType="String" resultType="int">
+select count(*) from order_detail where orderID=#{id}
+</select>
+<select id="selectOrderDetailByOrderid" parameterType="String" resultMap="orderdetailResultMap">
+select a.*,b.product_name from order_detail a , products b 
+where a.productID= b.productID and a.orderID=#{id} 
+
+</select>
+<delete id="deleteOrderDetail" parameterType="String" >
+delete from Order_detail where orderID=#{id} 
+
+</delete>
+
+</mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.ProductsMapper">
+
+<!-- 参数如果是简单类型的话 大括号里可以随便写，但如果是自定义类，就要写对应的定义的参数 -->
+  <select id="selectProductById" parameterType="int" resultMap="PuResultMap" >
+  select a.* ,b.provider_name,c.category_name from products a,categorys c,providers b  
+where a.providerID=b.providerID and a.categoryID=c.categoryID and  productID=#{puID}
+</select>
+ <resultMap id="PuResultMap" type="com.xiangmu.entity.Products">
+    <id column="ProductID"  property="puID"  />
+		<result column="product_name" property="pu_name" />
+		<result column="income_price" property="in_price" />
+		<result column="sales_price" property="sales_price" />
+		<result column="income_date" property="date"   />
+		<result column="quantity" property="quantity" />
+
+     <association property="p" javaType="Providers">
+       <id column="providerID"  property="peID"  />
+    <result column="provider_name" property="pe_name"   />
+     </association>
+      <association property="c" javaType="Categorys">
+       <id column="categoryID"  property="cgID"  />
+    <result column="category_name" property="cg_name"   />
+     </association>
+</resultMap> 
+<insert id="insertProduct" parameterType="Products" >
+
+ insert into products (product_name,income_price,providerID,quantity,sales_price,categoryID,income_date) values (#{pu_name},#{in_price},#{p.peID},#{quantity},#{sales_price},#{c.cgID},#{date})
+</insert> 
+<delete id="deleteProductById"  parameterType="int">
+delete from products where productID=#{id}
+
+</delete>
+
+ <update id="updateProduct" parameterType="Products">
+UPDATE products set product_name=#{pu_name},providerID=#{p.peID},  categoryID=#{c.cgID},income_price=#{in_price},sales_price=#{sales_price},income_date=#{date} where productID=#{puID}
+ </update>
+ <select id="selectAllProduct" resultMap="PuResultMap" >
+ SELECT * , b.category_name,c.provider_name FROM products a ,categorys b ,providers c 
+where b.categoryID=a.categoryID and c.providerID=a.providerID
+ </select>
+ <select id="selectProductByCateId" parameterType="int"  resultMap="PuResultMap" >
+ SELECT * FROM products where categoryID=#{id}
+ </select>
+  <select id="selectProductByPeId" parameterType="int"  resultMap="PuResultMap" >
+ SELECT * FROM products where providerID=#{id}
+ </select>
+ <select id="selectProductByLike" parameterType="String"  resultMap="PuResultMap" >
+ SELECT * FROM products where product_name like "%#{value}%"
+ 
+  
+ </select>
+ <select id="selectProductByName" parameterType="String" resultMap="PuResultMap" >
+ SELECT * FROM products where product_name=#{a}
+ 
+  
+ </select>
+ <select id="selectPuCount"  resultType="int" >
+ SELECT count(*) FROM products 
+ 
+  
+ </select>
+ <select id="selectProductByPage" parameterType="map"  resultMap="PuResultMap" >
+ SELECT * , b.category_name,c.provider_name FROM products a ,categorys b ,providers c 
+where b.categoryID=a.categoryID and c.providerID=a.providerID limit #{startindex},#{pagesize}
+ 
+  
+ </select>
+ <select id="selectProductByCondition" parameterType="map"  resultMap="PuResultMap" >
+ SELECT * , b.category_name,c.provider_name FROM products a ,categorys b ,providers c 
+ <where>
+ <!--  <if test="pu.c.cgID != 0">
+ and productID=#{puID}
+ </if>-->
+ <if test="pu.pu_name !=null and pu.pu_name !=''">
+ and product_name  like "%"#{pu.pu_name}"%"
+ </if>
+ <if test="pu.p.providerid != 0">
+ and providerID=#{p.providerid}
+ </if>
+ <if test="pu.c.categoryid != 0">
+ and categoryID=#{c.categoryid}
+ </if>
+ 
+ </where>
+ 
+ </select>
+ <select id="selectProductByConditionByPage" parameterType="map"  resultMap="PuResultMap" >
+ SELECT * , b.category_name,c.provider_name FROM products a ,categorys b ,providers c 
+ <where>
+ b.categoryID=a.categoryID and c.providerID=a.providerID
+ <!--  <if test="pu.c.cgID != 0">
+ and productID=#{puID}
+ </if>-->
+ <if test="pu.pu_name !=null and pu.pu_name !=''">
+ and a. product_name  like "%"#{pu.pu_name}"%"
+ </if>
+ <if test="pu.p.peID != 0">
+ and a.providerID=#{pu.p.peID}
+ </if>
+ <if test="pu.c.cgID != 0">
+ and a.categoryID=#{pu.c.cgID}
+ </if>
+ 
+ </where>
+ limit #{startindex},#{pagesize}
+ </select>
+  <select id="selectPuCountByCondition" parameterType="map"  resultType="int" >
+ SELECT  count(*) FROM products 
+ <where>
+ <!--  <if test="pu.c.cgID != 0">
+ and productID=#{puID}
+ </if>-->
+ <if test="pu.pu_name !=null and pu.pu_name !=''">
+ and product_name  like "%"#{pu.pu_name}"%"
+ </if>
+ <if test="pu.p.peID != 0">
+ and providerID=#{pu.p.peID}
+ </if>
+ <if test="pu.c.cgID != 0">
+ and categoryID=#{pu.c.cgID}
+ </if>
+ 
+ </where>
+ 
+ </select>
+ 
+
+</mapper>

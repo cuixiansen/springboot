@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+<context:component-scan base-package="com.xiangmu"></context:component-scan>
+<!-- 视图解析器 -->
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">	
+<!-- 配置视图解析器的前缀和后缀 -->	
+	<property name="prefix" value="/WEB-INF/views/"></property>	
+	<property name="suffix" value=".jsp"></property>
+	<property name="order" value="1"></property>
+</bean>
+<!-- excle 解析器 -->
+<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">	
+	<property name="order" value="0"></property>
+	
+</bean>
+ <!-- 静态资源配置，即样式bootstract 这些东西  老师讲的-->
+<mvc:default-servlet-handler/>
+<mvc:annotation-driven></mvc:annotation-driven> 
+<!--静态资源访问 不用加yexing-->
+    
+   <!--   <mvc:resources location="/js/" mapping="/js/**"/>
+    <mvc:resources location="/css/" mapping="/css/**"/>
+    <mvc:resources location="/fonts/" mapping="/fonts/**"/>
+    <mvc:resources location="/javascript/" mapping="/javascript/**"/>
+    
+-->
+<!-- 配置国际化解析器中英文 -->
+<!--  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">-->
+<!--  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+<property name="basename" value="message"></property>
+</bean>
+<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+<mvc:interceptors>
+<bean id="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"></bean>
+
+</mvc:interceptors>
+
+</bean>-->
+<bean name="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"></property>
+        <property name="maxUploadSize" value="1024000"></property>
+    </bean>
+<!--  <bean id="multipartResolver" 
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+<property name="defaultEncoding" value="UTF-8"></property>
+<property name="maxUploadSize" value="1024000"></property>
+</bean>-->
+ 
+    <!-- shiro夸容器管理 -->
+ <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+ <!-- shiro 注解 -->
+   
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <!-- Secure Spring remoting:  Ensure any Spring Remoting method invocations can be associated
+         with a Subject for security checks. -->
+    <bean id="secureRemoteInvocationExecutor" class="org.apache.shiro.spring.remoting.SecureRemoteInvocationExecutor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+</beans>

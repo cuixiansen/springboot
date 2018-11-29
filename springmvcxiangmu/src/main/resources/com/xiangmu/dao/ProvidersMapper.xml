@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.ProvidersMapper">
+
+<!-- 参数如果是简单类型的话 大括号里可以随便写，但如果是自定义类，就要写对应的定义的参数 -->
+  <select id="selectProviderById" parameterType="int" resultMap="PeResultMap" >
+  SELECT * FROM providers WHERE providerID=#{id}
+</select>
+<resultMap id="PeResultMap" type="com.xiangmu.entity.Providers">
+    <id column="ProviderID"  property="peID"  />
+    <result column="provider_name" property="pe_name"   />
+    <result column="provider_add"  property="pe_add"  />
+     <result column="provider_tel"  property="pe_tel"  />
+</resultMap> 
+<insert id="insertProvider" parameterType="Providers" >
+
+insert into  providers (provider_name,provider_add,provider_tel,email,acount) values (#{pe_name},#{pe_add},#{pe_tel},#{email},#{acount})  
+</insert> 
+<delete id="deleteProviderById"  parameterType="int">
+delete from providers where providerID=#{id}
+
+</delete>
+ <update id="updateProvider" parameterType="providers">
+update providers set provider_name=#{pe_name}, provider_tel=#{pe_name}, provider_add=#{pe_add},acount=#{acount}, email=#{email} where providerID=#{peID}
+ </update>
+ <select id="selectAllProvider" resultMap="PeResultMap" >
+ SELECT * FROM providers
+ </select>
+ <select id="selectProviderByName" parameterType="String" resultMap="PeResultMap" >
+ SELECT * FROM providers where provider_name=#{value}
+ </select>
+ <select id="selectProviderByLike" parameterType="String"  resultMap="PeResultMap" >
+ SELECT * FROM providers where provider_name like "%#{value}%"
+ 
+  
+ </select>
+ <select id="selectProviderByPage" parameterType="map"  resultMap="PeResultMap" >
+ SELECT * FROM providers limit #{startindex},#{pagesize}
+ 
+  
+ </select>
+ <select id="selectCountPe" resultType="int" >
+ select count(*) from providers 
+ </select>
+ 
+ 
+ <select id="selectPeByConditionByPage" parameterType="map"  resultMap="PeResultMap" >
+ select * from providers
+ <where>
+ <if test="pe.peID !=0">
+ and providerID=#{pe.peID}
+ </if>
+ <if test="pe.pe_name !='' and pe.pe_name !=null">
+ and provider_name  like "%"#{pe.pe_name}"%"
+ </if>
+ </where>
+limit #{startindex},#{pagesize}
+ </select>
+
+</mapper>

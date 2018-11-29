@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.OrdersMapper">
+<resultMap id="orderResultMap" type="com.xiangmu.entity.Orders">
+    <id column="orderID"  property="orderID"  />
+    <result column="order_date" property="order_date"   />
+    <result column="customerID"  property="cus.customerID"  />
+    <result column="customer_name"  property="cus.customer_name"  />
+    <result column="emp_name"  property="emp.emp_name"  />
+    <result column="empID"  property="emp.empID"  />
+</resultMap> 
+<insert id="insertOrders" parameterType="orders" >
+insert into orders (orderID,customerID,empID,order_date) values(#{orderID},#{cus.customerID},#{emp.empID},#{order_date})
+</insert>
+<select id="selectAllOrder"  resultMap="orderResultMap">
+select a.*,b.customer_name,c.emp_name from orders a,customers b,employees c 
+where a.empID=c.empID and a.customerID=b.customerID 
+</select>
+<select id="selectAllOrderById" parameterType="String"  resultMap="orderResultMap">
+select a.*,b.customer_name,c.emp_name from orders a,customers b,employees c 
+where a.empID=c.empID and a.customerID=b.customerID and a.orderID=#{id}
+</select>
+<select id="selectAllOrderByPage" parameterType="map"  resultMap="orderResultMap">
+select a.*,b.customer_name,c.emp_name from orders a,customers b,employees c 
+where a.empID=c.empID and a.customerID=b.customerID limit #{startindex},#{pagesize}
+</select>
+<select id="selectOrderCount"   resultType="int">
+select count(*) from Orders
+</select>
+<update id="updateOrder">
+update  Orders set empID=#{emp.empID},order_date=#{order_date} where orderID=#{orderID}
+</update>
+<select id="selectOrderByConditionByPage" parameterType="map" resultMap="orderResultMap">
+select a.*,b.customer_name,c.emp_name from orders a,customers b,employees c 
+<where>
+a.empID=c.empID and a.customerID=b.customerID
+<if test="order.emp.empID!=0">
+and a.empID=#{order.emp.empID}
+</if>
+<if test="order.orderID!=null and order.orderID!=''">
+ and a.orderID like "%"#{order.orderID}"%"
+ </if>
+ <if test="order.cus.customerID!=0">
+and a.customerID=#{order.cus.customerID}
+</if>
+</where>  
+limit #{startindex},#{pagesize}
+</select>
+
+<select id="selectOrderCountByCondition" parameterType="map" resultType="int">
+select count(*)from orders
+<where>
+<if test="order.emp.empID!=0">
+and empID=#{order.emp.empID}
+</if>
+<if test="order.orderID!=null and order.orderID!=''">
+ and orderID like "%"#{order.orderID}"%"
+ </if>
+ <if test="order.cus.customerID!=0">
+and customerID=#{order.cus.customerID}
+</if>
+</where>  
+
+</select>
+<delete id="deleteOrder" parameterType="String">
+delete from orders where orderID=#{id}
+</delete>
+</mapper>

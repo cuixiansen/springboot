@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangmu.dao.CategoryMapper">
+
+<!-- 参数如果是简单类型的话 大括号里可以随便写，但如果是自定义类，就要写对应的定义的参数 -->
+  <select id="selectCateById" parameterType="int" resultMap="CateResultMap" >
+  SELECT * FROM categorys  WHERE categoryID=#{id}
+</select>
+<resultMap id="CateResultMap" type="com.xiangmu.entity.Categorys">
+    <id column="categoryID"  property="cgID"  />
+    <result column="category_name" property="cg_name"   />
+    <result column="category_desc"  property="cg_desc"  />
+</resultMap> 
+<insert id="insertCate" parameterType="Categorys" >
+
+ insert into categorys (category_name,category_desc) values (#{cg_name},#{cg_desc})  
+</insert> 
+<delete id="deleteCateById"  parameterType="int">
+delete from categorys where categoryID=#{id}
+
+</delete>
+ <update id="updateCate" parameterType="Categorys">
+update categorys set category_name=#{cg_name}, category_desc=#{cg_desc} where categoryID=#{cgID}
+ 
+ </update>
+ <select id="selectAllCate" resultMap="CateResultMap" >
+ SELECT * FROM categorys
+ </select>
+ <select id="selectCateByLike" parameterType="String"  resultMap="CateResultMap" >
+ SELECT * FROM Categorys where category_name like "%#{value}%"
+ 
+  
+ </select>
+ <select id="selectCateByPage" parameterType="map"  resultMap="CateResultMap" >
+ SELECT * FROM categorys 
+ <where>
+ 
+
+  </where>
+  limit #{startindex},#{pagesize}
+ </select>
+ <select id="selectAllCateName"   resultType="String" >
+ SELECT category_name FROM categorys 
+ 
+ </select>
+ <select id="selectCateByName"  parameterType="String" resultMap="CateResultMap" >
+ SELECT * FROM categorys where category_name = #{name}
+ 
+ </select>
+ 
+ 
+ <select id="selectCount"   resultType="int" >
+ SELECT count(*) FROM categorys 
+ 
+  
+ </select>
+ <select id="selectCountByCondition"  parameterType="map"    resultType="int" >
+ SELECT count(*) FROM categorys 
+<where>
+ <if test="cate.cgID !=0">
+ and categoryID=#{cate.cgID}
+ </if>
+ <if test="cate.cg_name !='' and cate.cg_name !=null">
+ and category_name  like "%"#{cate.cg_name}"%"
+ </if>
+ </where>
+ <!-- <where>
+ <if test="cate.cg_name !='' and cate.cg_name !=null">
+ and category_name  like "%"#{cate.cg_name}"%"
+ </if>
+  </where> -->
+  
+ </select>
+ <select id="selectCateByCondition" parameterType="Categorys"  resultMap="CateResultMap" >
+ select * from categorys
+ <where>
+ <if test="cgID !=0">
+ and categoryID=#{cgID}
+ </if>
+ <if test="cg_name !='' and cg_name !=null">
+ and category_name  like "%"#{cg_name}"%"
+ </if>
+ 
+ </where>
+ 
+ </select>
+ 
+ 
+  <select id="selectCateByConditionByPage" parameterType="map"  resultMap="CateResultMap" >
+ select * from categorys
+ <where>
+ <if test="cate.cgID !=0">
+ and categoryID=#{cate.cgID}
+ </if>
+ <if test="cate.cg_name !='' and cate.cg_name !=null">
+ and category_name  like "%"#{cate.cg_name}"%"
+ </if>
+ </where>
+limit #{startindex},#{pagesize}
+ </select>
+ 
+ 
+ 
+ <sql id="selectbyarray">
+ select * from categorys where categoryID in
+ </sql>
+ <select id="selectCateByArray" resultMap="CateResultMap">
+ <include refid="selectbyarray"></include>
+   <foreach collection="array" open="("  close=")" separator="," item="i">
+   #{i}
+   </foreach>
+ 
+ 
+ 
+ </select>
+<insert id="insertCateBypiliang" parameterType="List" >
+insert into Categorys (category_name,category_desc) values
+<foreach collection="list"  separator="," item="cate">
+   (#{cate.cg_name},#{cate.cg_desc})
+   </foreach>
+</insert>
+</mapper>
+
