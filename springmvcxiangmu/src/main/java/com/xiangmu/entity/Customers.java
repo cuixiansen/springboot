@@ -7,7 +7,10 @@ private String customer_add;
 private String customer_bir;
 private String customer_tel;
 public Customers() {};
+
 //dfsfs
+
+//dsfsfsdf、
 public Customers(int customerID) {
 	super();
 	this.customerID = customerID;

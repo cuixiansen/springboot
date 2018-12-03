@@ -27,16 +27,16 @@ public class TestPu {
 	private ApplicationContext a;	
 	@Autowired	
 	ProductsMapper productsMapper;
-		@Before
-
-		public void before() throws IOException {
-			a=new ClassPathXmlApplicationContext("spring-mybatis.xml");
-			myfactory=(SqlSessionFactory)a.getBean("sqlSessionFactory");
-			/*Reader reader=Resources.getResourceAsReader("SqlmapConfig.xml");
-			myfactory=new SqlSessionFactoryBuilder().build(reader);**/
-			 /*SqlSession session=myfactory.openSession();
-			 System.out.println(session);*/
-		}
+//		@Before
+//
+//		public void before() throws IOException {
+//			a=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+//			myfactory=(SqlSessionFactory)a.getBean("sqlSessionFactory");
+//			/*Reader reader=Resources.getResourceAsReader("SqlmapConfig.xml");
+//			myfactory=new SqlSessionFactoryBuilder().build(reader);**/
+//			 /*SqlSession session=myfactory.openSession();
+//			 System.out.println(session);*/
+//		}
 	 @Test
 	 public void SelectCateByCateid() {
 		 SqlSession session=myfactory.openSession();
@@ -102,7 +102,7 @@ public class TestPu {
 //		int a=catemapper.insertProduct(pu);
 //		session.commit();
 //        System.out.println(a);
-		 ProductsMapper productsMapper=( ProductsMapper)a.getBean("productsMapper");
+		
 		 List<Products> pu= productsMapper.selectProductByCateId(100);
 		  System.out.println(pu.size());
 	 }
